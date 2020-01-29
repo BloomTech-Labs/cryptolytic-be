@@ -1,33 +1,17 @@
-const bcrypt = require('bcryptjs');
-const jwt = require("jsonwebtoken");
 const router = require('express').Router();
-const Users = require('../users/user-model');
-const { validateUser } = require("../Users/users-helpers");
+const Users = require('../users/user-model')
+const isAuthenticated = require('../auth/authenticate-middleware')
 
-router.post('/register', (req, res) => {
-  let user = req.body;
-  const validateResult = validateUser(user);
-
-  
-  if (validateResult.isSuccessful === true) {
-    const hash = bcrypt.hashSync(user.password, 10); // 2 ^ n
-    user.password = hash;
-
-    Users.add(user)
-      .then(saved => {
-        
-        res.status(201).json(saved);
-      })
-      .catch(error => {
-        res.status(500).json(error);
-      });
-    } else {
-      res.status(400).json({
-        message: "Invalid information about the user, see errors for details",
-        errors: validateResult.errors
-      });
-    }
-});
+router.post('/register', isAuthenticated, (req, res) => {
+  let user = req.user;
+  Users.add(user)
+    .then(saved => {
+      res.status(201).json(saved);
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });   
+  });
 
 router.post('/login', (req, res) => {
   let { username, password } = req.body;
