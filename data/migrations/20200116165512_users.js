@@ -8,7 +8,7 @@ exports.up = function(knex) {
       .unique()
       .notNullable();
     t.string("displayname", 255).unique();
-    t.stirng("firstname", 255);
+    t.string("firstname", 255);
     t.string("lastname", 255);
   });
 };
