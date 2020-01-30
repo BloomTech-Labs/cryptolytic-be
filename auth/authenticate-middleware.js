@@ -1,23 +1,20 @@
-const jwt = require("jsonwebtoken");
+const admin = require("firebase-admin");
 
 module.exports = (req, res, next) => {
  
-  const token = req.headers.authorization;
+  const idToken = req.headers.authorization;
 
-  if (token) {
-    const secret = process.env.JWT_SECRET || "is it secret?";
+  console.log(">>>>>>>>idtoken", idToken);
 
-  
-    jwt.verify(token, secret, (err, decodedToken) => {
-      if (err) {
-       
-        res.status(401).json({ message: "Invalid Credentials" });
-      } else {
-        req.decodedJwt = decodedToken;
-        next();
-      }
-    });
-  } else {
-    res.status(400).json({ message: "No credentials provided" });
-  }
+  admin.auth().verifyIdToken(idToken)
+  .then(decodedToken => {
+    const { uid, email } = decodedToken;
+    console.log(">>>>>uidEmail", uid, email)
+    req.user = { uid, email };
+    next();
+  })
+  .catch(err => {
+    res.status(401).json(err)
+  })
+
 };
