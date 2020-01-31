@@ -13,10 +13,11 @@ server.get("/", (req, res) => {
 });
 
 server.use(helmet());
-server.use(cors());
+
+server.use(cors);
 server.use(express.json());
 
-server.use("/api/auth", authRouter);
-server.use("/api/users", UserRouter);
+server.get("/auth", authRouter);
+server.use("/users", UserRouter);
 
 module.exports = server;
