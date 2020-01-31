@@ -1,13 +1,20 @@
 module.exports = {
   development: {
-    client: "pg",
-    connection:
-      "postgres://lgyzosthkchxiz:980c097f66f595ccd6f897fef0033c0be33e6feb0c134b6c0d3e02bad1400a39@ec2-107-21-201-238.compute-1.amazonaws.com:5432/d3m0vpf3mmptbb",
+    client: "sqlite3",
+    useNullAsDefault: true,
+    connection: {
+      filename: "./data/crytolytic.db3"
+    },
     migrations: {
       directory: "./data/migrations"
     },
     seeds: {
       directory: "./data/seeds"
+    },
+    pool: {
+      afterCreate: (conn, done) => {
+        conn.run("PRAGMA foreign_keys = ON", done);
+      }
     }
   },
   production: {
