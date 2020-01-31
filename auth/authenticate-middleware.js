@@ -1,23 +1,26 @@
-const jwt = require("jsonwebtoken");
+const admin = require("firebase-admin");
+
+const serviceAccount = require("../cryptolytic-auth-firebase-adminsdk-ayd4n-acd0c1c45c.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://cryptolytic-auth.firebaseio.com"
+});
 
 module.exports = (req, res, next) => {
- 
-  const token = req.headers.authorization;
+  const idToken = req.headers.authorization;
+  console.log(">>>>>>>>idtoken", idToken);
 
-  if (token) {
-    const secret = process.env.JWT_SECRET || "is it secret?";
-
-  
-    jwt.verify(token, secret, (err, decodedToken) => {
-      if (err) {
-       
-        res.status(401).json({ message: "Invalid Credentials" });
-      } else {
-        req.decodedJwt = decodedToken;
-        next();
-      }
+  admin
+    .auth()
+    .verifyIdToken(idToken)
+    .then(decodedToken => {
+      const { uid, email } = decodedToken;
+      console.log(">>>>>uidEmail", uid, email);
+      req.user = { uid, email };
+      next();
+    })
+    .catch(err => {
+      res.status(401).json(err);
     });
-  } else {
-    res.status(400).json({ message: "No credentials provided" });
-  }
 };

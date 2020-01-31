@@ -13,6 +13,7 @@ server.get("/", (req, res) => {
 });
 
 server.use(helmet());
+
 server.use(cors);
 server.use(express.json());
 
