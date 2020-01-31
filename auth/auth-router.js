@@ -13,38 +13,23 @@ router.post("/register", isAuthenticated, (req, res) => {
     });
 });
 
-// router.post('/login', (req, res) => {
-//   let { username, password } = req.body;
-
-//   Users.findBy({ username })
-//     .first()
-//     .then(user => {
-//       if (user && bcrypt.compareSync(password, user.password)) {
-//         const token = getJwtToken(user.username);
-//         res.status(200).json({ message: `Welcome ${user.username}!and this token:`, token });
-//       } else {
-//         res.status(401).json({ message: 'Invalid Credentials' });
-//       }
-//     })
-//     .catch(error => {
-//       res.status(500).json(error);
-//     });
-// });
-
-// function getJwtToken(username) {
-//   const payload = {
-//     username,
-//     role: "student"
-//   };
-
-//   const secret = process.env.JWT_SECRET || "is it secret?";
-
-//   const options = {
-//     expiresIn: "1d"
-//   };
-
-//   return jwt.sign(payload, secret, options);
-// }
+router.post("/login", isAuthenticated, (req, res) => {
+  const { uid } = req.user;
+  console.log(uid);
+  Users.findByUid(uid)
+    .first()
+    .then(user => {
+      if (user) {
+        const { email, displayname, firstname, lastname } = user;
+        res.status(200).json({ email, displayname, firstname, lastname });
+      } else {
+        res.status(401).json({ message: "Invalid Credentials" });
+      }
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
+});
 
 // router.get("/logout", (req, res) => {
 //   if (req.session) {

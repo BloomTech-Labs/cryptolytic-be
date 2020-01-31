@@ -3,7 +3,7 @@ const db = require("../data/db-config.js");
 
 module.exports = {
   find,
-  findById,
+  findByUid,
   add
 };
 
@@ -12,9 +12,10 @@ function find() {
   // return db('users');
 }
 
-function findById(id) {
+function findByUid(uid) {
+  console.log("model uid", uid, typeof uid);
   return db("users")
-    .where({ id })
+    .where({ uid })
     .first();
 }
 
