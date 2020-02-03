@@ -8,6 +8,7 @@ admin.initializeApp({
 });
 
 module.exports = (req, res, next) => {
+  console.log("middleware");
   const idToken = req.headers.authorization;
   console.log(">>>>>>>>idtoken", idToken);
 
