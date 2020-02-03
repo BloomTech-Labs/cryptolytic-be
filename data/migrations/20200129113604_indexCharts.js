@@ -4,7 +4,7 @@ exports.up = function(knex) {
     .createTable('indexCharts', t => {
         t.increments();
         t.string('name', 255).notNullable();
-        t.interval('interval', 255).notNullable();
+        t.integer('interval', 255).notNullable();
         t
         .integer('users_id')
         .unsigned()
